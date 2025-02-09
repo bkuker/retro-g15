@@ -1,9 +1,11 @@
-#Copy loaded program from 19 -> 0 and begin execution at 0:04
+#LL S P.TT.NN.C.SS.DD BP  Comment
+
+# Copy loaded program from 19 -> 0 and begin execution at 0:04
 .00 . u.01.02.0.19.00     Line 19 to Line 0 - Test not set
 .01 . u.02.02.0.19.00     Line 19 to Line 0 - Test set
 .02 .  .04.04.0.21.31     Execute Line 0 at T4
 
-#Print value A to typewriter
+# Print value A to typewriter
 .04 .  .30.05.1.00.28     0.30 -> ARc   AR = A
 .05 .  .07.07.0.08.31     Output AR to typewriter
 .07 .  .07.07.0.28.31     While !IOReady GOTO 7

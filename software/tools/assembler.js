@@ -74,30 +74,32 @@ for (const rawText of lines) {
 
 }
 
-let bin = "";
-
+//Convert the program to an array of words at the appropriate locations
+let lineWords = [];
 for ( let l = 0; l < 108; l++ ){
-    let word = 0;
     if( line[l] ){
-        word = line[l].word;
-        
+        lineWords[l] = line[l].word;
+    } else {
+        lineWords[l] = 0;
     }
-    //console.log(l.l, g15Hex(l.word), l.rawText);
-    let b = ((word>>>0).toString(2).padStart(29, "0"));
+}
+
+//Convert lineWords into a binary string
+let bin = "";
+for ( let l = 0; l < 108; l++ ){
+    let b = ((lineWords[l]>>>0).toString(2).padStart(29, "0"));
     bin = b + bin;
 }
 
-let tape = bin.match(/.{1,116}/g);
+//Convert binary to tape
+let chunks = bin.match(/.{1,116}/g);
 let res = "";
 const SYM = "0123456789uvwxyz";
-for ( let line of tape ){
-    //console.log("line", line);
-    //line = line.split("").reverse().join("");
+for ( let chunk of chunks ){
     let out = "";
-    let nibbles = line.match(/.{1,4}/g);
+    let nibbles = chunk.match(/.{1,4}/g);
     for ( let nibble of nibbles ){
         let v = parseInt(nibble, 2);
-        //console.log(nibble, v);
         out += SYM[v];
     }
     res = res + out + "/\n";
