@@ -24,7 +24,7 @@ These are @UsagiElectric's notes from Discord
 
 import fs from "fs";
 
-const fileName = 'software/tools/triangle.asm';
+const fileName = 'software/tools/mac_add_test.asm';
 const data = fs.readFileSync(fileName, 'utf-8'); // Read file synchronously
 const lines = data.split(/\r?\n/); // Split into lines
 
@@ -218,13 +218,13 @@ function commandToInstructionWord(c) {
 
     o = o | (c.n << 13);
     o = o | ((c.bp ? 1 : 0) << 20);
-    o = o | (c.t << 21);
 
     //Is this deferred?
     // Prefix u: i/d = 0 immediate
     //        w: i/d = 1 deferred
     //    blank: i/d = 1 deferred
     //           UNLESS dest = 31 or t = l + 1
+    let tPrime = c.t;
     const DEFERRED = 1;
     const IMMEDIATE = 0;
     let id;
@@ -238,10 +238,25 @@ function commandToInstructionWord(c) {
         } else if (c.t == c.l + 1) {
             //TODO T is wrong
             id = IMMEDIATE;
+
+            if ( c.c < 4 ){
+                tPrime = c.t + 1;
+            } else {
+                if ( c.t % 2 == 0 ){
+                    tPrime = c.t + 2;
+                } else {
+                    tPrime = c.t + 1;
+                }
+            }
+
         } else {
             id = DEFERRED;
         }
     }
+
+    o = o | (tPrime << 21);
+
+
     o = o | (id << 28);
 
     return o;
