@@ -226,8 +226,8 @@ function commandToInstructionWord(c) {
             id = DEFERRED;
         }
     }
-
     o = o | (id << 28);
+    
     return o;
 }
 
