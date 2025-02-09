@@ -129,7 +129,29 @@ function toBin(c){
     o = o | ( (c.bp?1:0) << 20 );
     o = o | ( c.t << 21 );
 
-    o = o | ( (c.p=="w"?1:0) << 28 );
+    //Is this deferred?
+    // Prefix u: i/d = 0 immediate
+    //        w: i/d = 1 deferred
+    //    blank: i/d = 1 deferred
+    //           UNLESS dest = 31 or t = l + 1
+    const DEFERRED = 1;
+    const IMMEDIATE = 0;
+    let id;
+    if ( c.p =="u"){
+       id = IMMEDIATE;
+    } else if ( c.p == "w" ){
+        id = DEFERRED;
+    } else if ( c.p == " "){
+        if ( c.dst == 31 ){
+            id = IMMEDIATE;
+        } else if ( c.t == c.l + 1 ){
+            id = IMMEDIATE;
+        } else {
+            id = DEFERRED;
+        }
+    }
+
+    o = o | ( id << 28 );
     return o;
 }
 
