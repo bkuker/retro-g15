@@ -27,7 +27,7 @@ import fs from "fs";
 const data = fs.readFileSync('software/tools/fib.asm', 'utf-8'); // Read file synchronously
 const lines = data.split(/\r?\n/); // Split into lines
 
-let line = [];
+let program = []; //The commands and comments in PROGRM order, not location order
 
 for (const rawText of lines) {
     if (rawText.trim().startsWith("#")) {
@@ -76,7 +76,7 @@ for (const rawText of lines) {
         //This is the command's actual binary value as an integer
         cmd.word = commandToInstructionWord(cmd);
 
-        line[cmd.l] = cmd;
+        program.push(cmd);
     } else {
         //TODO: Support double precision constants?
 
@@ -112,9 +112,15 @@ for (const rawText of lines) {
             value: valNum * (neg ? -1 : 1),
             comment
         }
-        line[data.l] = data;
+        program.push(data);
     }
 
+}
+
+//Order the program by location.
+let line = [];  //An array with each command at it's L value. (sparse)
+for ( let cmd of program ){
+    line[cmd.l] = cmd;
 }
 
 //Convert the program to an array of words at the appropriate locations
@@ -227,7 +233,7 @@ function commandToInstructionWord(c) {
         }
     }
     o = o | (id << 28);
-    
+
     return o;
 }
 
