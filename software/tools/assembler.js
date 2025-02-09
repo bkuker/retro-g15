@@ -24,7 +24,8 @@ These are @UsagiElectric's notes from Discord
 
 import fs from "fs";
 
-const data = fs.readFileSync('software/tools/fib.asm', 'utf-8'); // Read file synchronously
+const fileName = 'software/tools/triangle.asm';
+const data = fs.readFileSync(fileName, 'utf-8'); // Read file synchronously
 const lines = data.split(/\r?\n/); // Split into lines
 
 let program = []; //The commands and comments in PROGRM order, not location order
@@ -136,6 +137,10 @@ for (let l = 0; l < 108; l++) {
     }
 }
 
+
+//Print out the PTI
+console.log("# " + fileName + "\n" + lineToTape(lineWords));
+
 function lineToTape(lineWords) {
     /**
      * This function takes a 108 long array of integers
@@ -172,8 +177,6 @@ function lineToTape(lineWords) {
 
 }
 
-//Print out the PTI
-console.log(lineToTape(lineWords));
 
 function g15DecToInt(v) {
     /**
@@ -233,6 +236,7 @@ function commandToInstructionWord(c) {
         if (c.dst == 31) {
             id = IMMEDIATE;
         } else if (c.t == c.l + 1) {
+            //TODO T is wrong
             id = IMMEDIATE;
         } else {
             id = DEFERRED;
