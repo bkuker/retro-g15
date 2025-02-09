@@ -2,7 +2,7 @@
 //Its a .... Encoder.
 import fs from "fs";
 
-const data = fs.readFileSync('software/tools/ultimateAnswer.asm', 'utf-8'); // Read file synchronously
+const data = fs.readFileSync('software/tools/fib.asm', 'utf-8'); // Read file synchronously
 const lines = data.split(/\r?\n/); // Split into lines
 //console.log("LL S P.TT.NN.C.SS.DD BP");
 
