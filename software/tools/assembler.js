@@ -28,8 +28,9 @@ const data = fs.readFileSync('software/tools/fib.asm', 'utf-8'); // Read file sy
 const lines = data.split(/\r?\n/); // Split into lines
 
 let program = []; //The commands and comments in PROGRM order, not location order
-
+let sourceLineNumber = 0;
 for (const rawText of lines) {
+    sourceLineNumber++;
     if (rawText.trim().startsWith("#")) {
         continue;   //Ignore Comment
     } if (rawText.trim().length == 0) {
@@ -70,7 +71,8 @@ for (const rawText of lines) {
             src: +src,
             dst: +dst,
             bp: bp.trim().length > 0,
-            comment
+            comment,
+            sourceLineNumber
         }
 
         //This is the command's actual binary value as an integer
@@ -110,7 +112,8 @@ for (const rawText of lines) {
             l,
             word,
             value: valNum * (neg ? -1 : 1),
-            comment
+            comment,
+            sourceLineNumber
         }
         program.push(data);
     }
