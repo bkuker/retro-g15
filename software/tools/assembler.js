@@ -199,6 +199,9 @@ function commandToInstructionWord(c) {
     /**
      * Converts a command object into an instruction word.
      * Returns an integer, not g15 hex
+     * 
+     * TODO Review https://rbk.delosent.com/allq/Q9896.pdf p29
+     * T needs modified for block commands maybe?
      */
     let o = 0;
     o = o | (c.dst << 1);
