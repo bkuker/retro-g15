@@ -441,7 +441,7 @@ window.addEventListener("load", function() {
             }
             *******************************************************************/
 
-            head = g15Hex(word).padStart(8, "0") + " " +
+            head = loc.toString().padStart(2, "0") + " " + g15Hex(word).padStart(8, "0") + " " +
                 signCode + g15Hex(value).padStart(7, "0") + " " +
                 signedValue.toString().padStart(10, " ") + " " +
                 signCode + (value/two28).toFixed(9) + " " +

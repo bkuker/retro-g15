@@ -24,7 +24,7 @@ These are @UsagiElectric's notes from Discord
 
 import fs from "fs";
 
-const fileName = 'software/tools/mac_add_test.asm';
+const fileName = 'software/tools/trace/NoteLoader.asm';
 const data = fs.readFileSync(fileName, 'utf-8'); // Read file synchronously
 const lines = data.split(/\r?\n/); // Split into lines
 
@@ -137,9 +137,16 @@ for (let l = 0; l < 108; l++) {
     }
 }
 
-
+let pti = /*"# " + fileName + "\n" + */lineToTape(lineWords);
 //Print out the PTI
-console.log("# " + fileName + "\n" + lineToTape(lineWords));
+console.log(pti);
+fs.writeFileSync(fileName + ".pti", pti);
+
+for (let l = 0; l < 108; l++) {
+    if ( lineWords[l] != 0 ){
+        console.log(l.toString().padStart(2, "0"), g15Hex(lineWords[l]));
+    }
+}
 
 function lineToTape(lineWords) {
     /**

@@ -2355,9 +2355,36 @@ class Processor {
             this.drum.waitFor(1);
         }
     }
+    
+    
+    trace() {
+        if ( !this.instructionTrace ){
+            this.instructionTrace = [];
+        }
+        let t = {
+            cmdLoc: this.cmdLoc.value,
+            cd: this.CD.value
+        }
+        if ( t.cmdLoc == 127 ){
+            t.ar = this.drum.AR.value;
+        }
+        if (this.D.value == 31) {
+            if (this.S.value == 21) {
+                t.mark = true;
+                t.returnAddress = this.T.value;
+            } else if ( this.S.value == 20) {
+                t.return = true;
+            }
+        }
+        this.instructionTrace.push(t);
+        if ( this.D.value == 31 && this.S.value == 16 ){
+            console.log(this.instructionTrace);
+        }
+    }
 
     /**************************************/
     transfer() {
+        this.trace();
         /* Executes the command currently loaded into the command register (CM) */
 
         switch (this.D.value) {

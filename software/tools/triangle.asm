@@ -3,7 +3,7 @@
 # Copy loaded program from 19 -> 0 and begin execution at 0:04
 .00 . u.01.02.0.19.00     Line 19 to Line 0 - Test not set
 .01 . u.02.02.0.19.00     Line 19 to Line 0 - Test set
-.02 .  .04.05.0.21.31     Execute Line 0 GOTO 5
+.02 .  .05.05.0.21.31     Execute Line 0 GOTO 5
 
 
 .04 .  .06.04.0.16.31     HALT
@@ -36,7 +36,7 @@
 .41 0400000               F3 Format code, 1 digit, end
 .42 4400000               F3 Format code, 0 digit, CR end
 .43 8888888               eights!
-.44 10                    ROWS
+.44 5                     ROWS
 .45 0                     COLS
 
 #Subroutine Print 8
