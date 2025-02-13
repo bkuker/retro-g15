@@ -23,8 +23,11 @@ These are @UsagiElectric's notes from Discord
 */
 
 import fs from "fs";
+import * as util from "./assemblerUtils.js";
+import * as tape from "./tapeUtils.js";
 
-const fileName = 'software/tools/trace/NoteLoader.asm';
+const fileName = process.argv[2];
+
 const data = fs.readFileSync(fileName, 'utf-8'); // Read file synchronously
 const lines = data.split(/\r?\n/); // Split into lines
 
@@ -77,7 +80,7 @@ for (const rawText of lines) {
         }
 
         //This is the command's actual binary value as an integer
-        cmd.word = commandToInstructionWord(cmd);
+        cmd.word = util.commandToInstructionWord(cmd);
 
         program.push(cmd);
     } else {
@@ -95,7 +98,7 @@ for (const rawText of lines) {
         }
 
         //convert the abs to an integer
-        let valNum = g15HexToDec(val);
+        let valNum = util.g15HexToDec(val);
 
         //Convert that integer and sign into the
         //raw g15 word
@@ -123,7 +126,7 @@ for (const rawText of lines) {
 
 //Order the program by location.
 let line = [];  //An array with each command at it's L value. (sparse)
-for ( let cmd of program ){
+for (let cmd of program) {
     line[cmd.l] = cmd;
 }
 
@@ -137,52 +140,19 @@ for (let l = 0; l < 108; l++) {
     }
 }
 
-let pti = /*"# " + fileName + "\n" + */lineToTape(lineWords);
+let pti = /*"# " + fileName + "\n" + */tape.lineToTape(lineWords);
 //Print out the PTI
 console.log(pti);
-fs.writeFileSync(fileName + ".pti", pti);
+//fs.writeFileSync(fileName + ".pti", pti);
 
+/*
+A dump of words
 for (let l = 0; l < 108; l++) {
     if ( lineWords[l] != 0 ){
-        console.log(l.toString().padStart(2, "0"), g15Hex(lineWords[l]));
+        console.log(l.toString().padStart(2, "0"), util.g15Hex(lineWords[l]));
     }
-}
+}*/
 
-function lineToTape(lineWords) {
-    /**
-     * This function takes a 108 long array of integers
-     * and converts it to a string in the .pti format
-     * described at:
-     * 
-     * https://github.com/retro-software/G15-software/ 
-     */
-
-
-    //Convert lineWords into a binary string
-    let bin = "";
-    for (let l = 0; l < 108; l++) {
-        let b = ((lineWords[l] >>> 0).toString(2).padStart(29, "0"));
-        bin = b + bin;
-    }
-
-    //Convert binary to tape
-    let chunks = bin.match(/.{1,116}/g);
-    let ptiBlock = "";
-    const SYM = "0123456789uvwxyz";
-    for (let i = 0; i < chunks.length; i++) {
-        let out = "";
-        let nibbles = chunks[i].match(/.{1,4}/g);
-        for (let nibble of nibbles) {
-            let v = parseInt(nibble, 2);
-            out += SYM[v];
-        }
-        ptiBlock = ptiBlock + out;
-        //Apply the appropriate line ending
-        ptiBlock = ptiBlock + (i == chunks.length - 1 ? "S" : "/\n");
-    }
-    return ptiBlock;
-
-}
 
 
 function g15DecToInt(v) {
@@ -195,115 +165,4 @@ function g15DecToInt(v) {
     v = v.replace("u", "10");
     v = v.replace("v", "11");
     return +v;
-}
-
-function formatCommand(c) {
-    /**
-     * Returns a formatted version of a command object in the same format
-     * as the input.
-     */
-    return `.${c.l} ${c.s} ${c.p}.${c.t}.${c.n}.${c.c}.${c.src}.${c.dst} ${c.bp ? "-" : " "}  ${c.comment}`;
-}
-
-function commandToInstructionWord(c) {
-    /**
-     * Converts a command object into an instruction word.
-     * Returns an integer, not g15 hex
-     * 
-     * TODO Review https://rbk.delosent.com/allq/Q9896.pdf p29
-     * T needs modified for block commands maybe?
-     */
-    let o = 0;
-    o = o | (c.dst << 1);
-    o = o | (c.src << 6);
-
-    //Disassembler shows C as
-    //(dp*4 + c)
-
-    o = o | ((c.c & 0b11) << 11);
-    o = o | (c.c >> 2); //TODO CHECK SINGLE vs DOUBLE
-
-    o = o | (c.n << 13);
-    o = o | ((c.bp ? 1 : 0) << 20);
-
-    //Is this deferred?
-    // Prefix u: i/d = 0 immediate
-    //        w: i/d = 1 deferred
-    //    blank: i/d = 1 deferred
-    //           UNLESS dest = 31 or t = l + 1
-    let tPrime = c.t;
-    const DEFERRED = 1;
-    const IMMEDIATE = 0;
-    let id;
-    if (c.p == "u") {
-        id = IMMEDIATE;
-    } else if (c.p == "w") {
-        id = DEFERRED;
-    } else if (c.p == " ") {
-        if (c.dst == 31) {
-            id = IMMEDIATE;
-        } else if (c.t == c.l + 1) {
-            //TODO T is wrong
-            id = IMMEDIATE;
-
-            if ( c.c < 4 ){
-                tPrime = c.t + 1;
-            } else {
-                if ( c.t % 2 == 0 ){
-                    tPrime = c.t + 2;
-                } else {
-                    tPrime = c.t + 1;
-                }
-            }
-
-        } else {
-            id = DEFERRED;
-        }
-    }
-
-    o = o | (tPrime << 21);
-
-
-    o = o | (id << 28);
-
-    return o;
-}
-
-function g15HexToDec(v) {
-    /**
-     * Convert a string in bendix hex to an integer
-     */
-    v = v.toLowerCase();
-    v = v.replace("u", "a");
-    v = v.replace("v", "b");
-    v = v.replace("w", "c");
-    v = v.replace("x", "d");
-    v = v.replace("y", "e");
-    v = v.replace("z", "f");
-    return parseInt(v, 16);
-}
-
-function g15Hex(v) {
-    /**
-     * Converts the value "v" to a hexidecimal string using the G-15
-     */
-    const hexRex = /[abcdefABCDEF]/g;   // standard hex characters
-    return v.toString(16).replace(hexRex, (c) => {
-        switch (c) {
-            case "a": case "A":
-                return "u";
-            case "b": case "B":
-                return "v";
-            case "c": case "C":
-                return "w";
-            case "d": case "D":
-                return "x";
-            case "e": case "E":
-                return "y";
-            case "f": case "F":
-                return "z";
-            default:
-                return "?";
-        }
-    }).padStart(8, "0");
 }

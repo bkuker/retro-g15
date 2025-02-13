@@ -12,6 +12,7 @@
 .05 . u.06.06.1.19.29   Sum line 19 to AR
 .06 .  .07.08.0.28.27   If AR == 0 GOTO 7 ELSE GOTO 8
 
+
 #Loop, load next 15 tape blocks into lines 4-18 
 # for ( TRACKS_TO_LOAD = -16; TRACKS_TO_LOAD != 0; TRACKS_TO_LOAD++ ) {
 .08 .  .22.23.1.00.28   AR = TRACKS_TO_LOAD (-16 to start)
