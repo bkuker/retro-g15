@@ -7,6 +7,13 @@ function wordToDec(w){
     return val;
 }
 
+function g15SignedHex(w){
+    let sign = w & 1;   //Extract sign bit
+    let val = w >> 1;   //Extract absolute value
+    let hex = g15Hex(val);
+    return (sign?"-":"") + hex;
+}
+
 function g15Hex(v) {
     /**
      * Converts the value "v" to a hexidecimal string using the G-15
@@ -37,12 +44,13 @@ function g15HexToDec(v) {
      * Convert a string in bendix hex to an integer
      */
     v = v.toLowerCase();
-    v = v.replace("u", "a");
-    v = v.replace("v", "b");
-    v = v.replace("w", "c");
-    v = v.replace("x", "d");
-    v = v.replace("y", "e");
-    v = v.replace("z", "f");
+    v = v.replaceAll("u", "a");
+    v = v.replaceAll("v", "b");
+    v = v.replaceAll("w", "c");
+    v = v.replaceAll("x", "d");
+    v = v.replaceAll("y", "e");
+    v = v.replaceAll("z", "f");
+    console.log(v);
     return parseInt(v, 16);
 }
 
@@ -81,6 +89,10 @@ function g15DecToInt(v) {
 
     v = v.replace("u", "10");
     v = v.replace("v", "11");
+    v = v.replace("w", "12");
+    v = v.replace("x", "13");
+    v = v.replace("y", "14");
+    v = v.replace("z", "15");
     return +v;
 }
 
@@ -95,6 +107,12 @@ function intToG15Dec(v){
         ret = "v" + (v - 110);
     } else  if (v >= 120 && v < 130 ) {
         ret = "w" + (v - 120);
+    } else  if (v >= 130 && v < 140 ) {
+        ret = "x" + (v - 130);
+    } else  if (v >= 140 && v < 150 ) {
+        ret = "y" + (v - 140);
+    } else  if (v >= 150 && v < 160 ) {
+        ret = "z" + (v - 150);
     }
     console.assert(ret.length == 2);
     return ret;
@@ -166,5 +184,5 @@ function commandToInstructionWord(c) {
 
 
 export {
-    g15Hex, g15HexToNormalHex, formatCommand, commandToInstructionWord, wordToDec, g15HexToDec
+    g15Hex, g15HexToNormalHex, formatCommand, commandToInstructionWord, wordToDec, g15HexToDec, intToG15Dec, g15SignedHex
 }

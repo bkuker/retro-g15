@@ -164,5 +164,9 @@ function g15DecToInt(v) {
      */
     v = v.replace("u", "10");
     v = v.replace("v", "11");
+    v = v.replace("w", "12");
+    v = v.replace("x", "13");
+    v = v.replace("y", "14");
+    v = v.replace("z", "15");
     return +v;
 }

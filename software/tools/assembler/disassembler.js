@@ -194,8 +194,13 @@ out += "\n\n#Not Reached from Entry Points\n\n";
 for (let cmd of program) {
     if (done.indexOf(cmd.l) == -1 && cmd.word != 0) {
         cmd.comment = util.g15Hex(cmd.word) + "\t" + util.wordToDec(cmd.word).toString().padStart(9) + "\t" + cmd.comment;
-        out = out + util.formatCommand(cmd) + "\n";
+        if ( cmd.comment.indexOf("Invalid") != -1 ){
+            out = out + `.${util.intToG15Dec(cmd.l)} ${util.g15SignedHex(cmd.word)}\n`;
+        } else {
+            out = out + util.formatCommand(cmd) + "\n";
+        }
     }
 }
+
 
 console.log(out);
