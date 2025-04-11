@@ -366,5 +366,5 @@ class PaperTapeReader {
 
 // Static properties
 
-PaperTapeReader.defaultSpeed = 250;     // frames/sec
+PaperTapeReader.defaultSpeed = 25000;     // frames/sec
 PaperTapeReader.startStopFrames = 35;   // 3.5 inches of tape

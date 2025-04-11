@@ -338,14 +338,14 @@ class ControlPanel {
             this.dcPowerLamp.set(0);
             this.$$("DCPowerLampFX").classList.add("powerUp");
 
-            await timer.set(1500);                      // wait for the DC power supplies...
+            await timer.set(150);                      // wait for the DC power supplies...
             systemClick.volume = 1;
             systemClick.currentTime = 0;
             systemClick.play();
-            await timer.set(2000);
+            await timer.set(200);
             systemClick.currentTime = 0;
             systemClick.play();
-            await timer.set(1500);
+            await timer.set(150);
 
             this.dcPowerLamp.set(1);
             this.$$("DCPowerLampFX").classList.remove("powerUp");

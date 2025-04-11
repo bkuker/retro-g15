@@ -25,7 +25,7 @@ export const wordSignMask = 0x01;               // sign bit mask
 export const two28 = 0x10000000;                // 2**28 for complementing word magnitude values
 export const two29 = 0x20000000;                // 2**29 for complementing full-word values
 
-export const defaultRPM = 1800;                 // default drum revolution speed, rev/min
+export const defaultRPM = 180000;                 // default drum revolution speed, rev/min
 export let drumRPM = defaultRPM;                // drum revolution speed, rev/minute
 
 // The following are constants once the drum RPM is determined.
