@@ -18,7 +18,7 @@ export {PaperTapeReader};
 
 import * as Util from "../emulator/Util.js";
 import * as IOCodes from "../emulator/IOCodes.js";
-import * as PPRTapeImage from "./resources/PPRTapeImage.js";
+import * as PPRTapeImage from "./resources/DoomTapeImage.js";
 
 class PaperTapeReader {
 
@@ -366,5 +366,5 @@ class PaperTapeReader {
 
 // Static properties
 
-PaperTapeReader.defaultSpeed = 250;     // frames/sec
+PaperTapeReader.defaultSpeed = 2500;     // frames/sec
 PaperTapeReader.startStopFrames = 35;   // 3.5 inches of tape
