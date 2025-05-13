@@ -51,6 +51,9 @@ class Typewriter {
         this.boundMenuClick = this.menuClick.bind(this);
         this.boundPanelKeydown = this.panelKeydown.bind(this);
         this.boundPanelKeyup = this.panelKeyup.bind(this);
+        this.boundPanelPaste = this.panelPaste.bind(this);
+
+        this.pasteBuffer = "";
 
         this.clear();
 
@@ -59,6 +62,37 @@ class Typewriter {
         this.paperDoc.addEventListener("keydown", this.boundPanelKeydown, false);
         this.paperDoc.addEventListener("keyup", this.boundPanelKeyup, false);
         $$("TypewriterMenuIcon").addEventListener("click", this.boundMenuClick, false);
+
+
+        //Paste Buffer Type-in
+        $$("FrontPanel").addEventListener("paste", this.boundPanelPaste, false);
+        this.paperDoc.addEventListener("paste", this.boundPanelPaste, false);
+        this.$$("TypewriterPasteBuffer").addEventListener("click", ()=>this.pasteBuffer = "");
+
+        let pasteReady = false;
+        this.window.setInterval(() => {
+            if (this.processor.OC.value != IOCodes.ioCmdTypeIn) {
+                //OC is not type in? Never ready.
+                pasteReady = false;
+            } else if ( pasteReady == false && this.processor.OC.value == IOCodes.ioCmdTypeIn) {
+                //OC is type-in and redy false? Set ready true and return.
+                //This has the effect of adding a delay after OC is type-in
+                pasteReady = true;
+            } else {
+                let key = this.pasteBuffer[0];
+                if ( key == '\n' )
+                    key = "Enter";
+                if ( key == '\t' )
+                    key = "Tab";
+
+                this.pasteBuffer = this.pasteBuffer.slice(1);
+                this.panelKeydown(new KeyboardEvent('keydown', {key}));
+            }
+            
+            this.$$("TypewriterPasteBuffer").lastChild.nodeValue = this.pasteBuffer;
+            console.log(this.pasteBuffer.length?'default':'none');
+            this.$$("TypewriterPasteBuffer").style.display = this.pasteBuffer.length?'initial':'none';
+        }, 250);
 
     }
 
@@ -70,6 +104,7 @@ class Typewriter {
         this.printerLine = 0;
         this.printerCol = 0;
 
+        this.pasteBuffer = "";
         this.setPaperEmpty();
     }
 
@@ -181,6 +216,15 @@ class Typewriter {
         }
     }
 
+    /**************************************/
+    panelPaste(ev){
+        /* Handles a text paste event */
+        ev.preventDefault();
+        ev.stopPropagation();
+        let text = (ev.clipboardData || window.clipboardData).getData("text");
+        console.log("Got pasted text", text);
+        this.pasteBuffer += text;
+    }
 
     /*******************************************************************
     *  Typewriter Output                                               *

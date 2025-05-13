@@ -463,3 +463,20 @@ H1 {
     background-color:   white;
     border:             2px solid #666;
     transform:          translate(0, -50%)}
+#TypewriterPasteBuffer {
+    display: none;
+    cursor: not-allowed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    right: 12px;
+    padding: 2px;
+    background-color: #ddd;
+    color: gray;}
+#TypewriterPasteBuffer::before {
+    color: gray;
+    font-weight: bold;
+    content: "Pasted Text: ";}
